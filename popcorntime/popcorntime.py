@@ -11,7 +11,7 @@ class PopcornTime:
     _MIN_SEEDS: int = 0
     _MIN_PEERS: int = 0
 
-    def __init__(self, debug=False, min_peers=0, min_seeds=0):
+    def __init__(self, debug: bool = False, min_peers: int = 0, min_seeds: int = 0):
         self.log = logging.getLogger(__name__)
         self.log.setLevel(logging.DEBUG if debug else logging.INFO)
         self.log.addHandler(logging.StreamHandler(sys.stdout))
