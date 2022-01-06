@@ -13,9 +13,9 @@ General Discord: https://discord.gg/dFD5HHa
 Developer Discord: https://discord.gg/rxNNHYN9EQ
 
 ## 📥 INSTALLING
-<a href="https://pypi.org/project/Pretty-Downloader">Latest PyPI stable release</a>
+<a href="https://pypi.org/project/popcorn-time">Latest PyPI stable release</a>
 ```bash
-pip install popcorn-time-api
+pip install popcorn-time
 ```
 
 ## ⚙ HOW TO USE

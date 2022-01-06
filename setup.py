@@ -4,10 +4,10 @@ import pathlib
 README = (pathlib.Path(__file__).parent / "README.md").read_text(encoding='utf8')
 
 setup(
-    name='popcorn-time-api',
+    name='popcorn-time',
     packages=find_packages(),
     version='0.0.1',
-    description='Interact with the popcorntime API with python',
+    description='Interact with the Popcorn Time API with python',
     long_description=README,
     long_description_content_type='text/markdown',
     author='DeadSec-Security',
