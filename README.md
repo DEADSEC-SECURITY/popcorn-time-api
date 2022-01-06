@@ -20,11 +20,6 @@ pip install popcorn-time
 
 ## ⚙ HOW TO USE
 ```python
-import PopcornTime
-popAPI = PopcornTime()
-```
-OR
-```python
 from popcorntime import PopcornTime
 popAPI = PopcornTime()
 ```
