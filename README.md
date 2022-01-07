@@ -1,4 +1,4 @@
-# Popcorn Time API ![Version](https://img.shields.io/badge/Version-v0.0.2-orange?style=flat-square&url=https://github.com/DEADSEC-SECURITY/popcorn-time-api/blob/main/CHANGELOG.md) ![Python_Version](https://img.shields.io/badge/Python-3.7%2B-blue?style=flat-square) ![License](https://img.shields.io/badge/License-MIT-red?style=flat-square) ![Donate](https://img.shields.io/badge/Donate-Crypto-yellow?style=flat-square) [![CodeQL](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml) [![Downloads](https://pepy.tech/badge/popcorn-time)](https://pepy.tech/project/popcorn-time) [![Downloads](https://pepy.tech/badge/popcorn-time/month)](https://pepy.tech/project/popcorn-time)
+# Popcorn Time API ![Version](https://img.shields.io/badge/Version-v0.0.3-orange?style=flat-square&url=https://github.com/DEADSEC-SECURITY/popcorn-time-api/blob/main/CHANGELOG.md) ![Python_Version](https://img.shields.io/badge/Python-3.7%2B-blue?style=flat-square) ![License](https://img.shields.io/badge/License-MIT-red?style=flat-square) ![Donate](https://img.shields.io/badge/Donate-Crypto-yellow?style=flat-square) [![CodeQL](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml) [![Downloads](https://pepy.tech/badge/popcorn-time)](https://pepy.tech/project/popcorn-time) [![Downloads](https://pepy.tech/badge/popcorn-time/month)](https://pepy.tech/project/popcorn-time)
  
 ## 📝 CONTRIBUTIONS
 
@@ -55,6 +55,8 @@ popAPI = PopcornTime()
 - #### FUNCTION `set_min_peers`
   - value : int, required
     - Minimum number of peers to select torrent
+- #### FUNCTION `get_server_status`
+  - Returns the server status in json format
 - #### FUNCTION `get_shows_page`
   - page : (int, str), required
   - Returns the shows page in json format
