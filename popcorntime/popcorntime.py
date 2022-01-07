@@ -92,6 +92,20 @@ class PopcornTime:
 
         return self._MIN_PEERS
 
+    def get_shows_stats(self) -> (requests.Response.json, None):
+        """
+            Get the shows stats
+
+            :return: dict (Example: {"action & adventure": {"count": 600, "title": "Action & Adventure"}})
+        """
+
+        stats = self._get(self._build_url('/shows/stat'))
+
+        if stats:
+            self.log.info('Got shows stats')
+            return stats
+        return None
+
     def get_shows_page(self, page: (int, str)) -> (requests.Response.json, None):
         """
             Gets the shows page
@@ -109,9 +123,9 @@ class PopcornTime:
 
     def get_show(self, show_id: (int, str)) -> (requests.Response.json, None):
         """
-            Gets the show page
+            Get the show
 
-            :param show_id: int (Example: 1)
+            :param show_id: int (Example: tt1285016)
             :return: dict (Example: {"status": "success", "data": {"show": {"...show data..."}}}
         """
 
@@ -119,6 +133,20 @@ class PopcornTime:
 
         if show:
             self.log.info(f'Got show {show_id}')
+            return show
+        return None
+
+    def get_random_show(self) -> (requests.Response.json, None):
+        """
+            Get a random show
+
+            :return: dict (Example: {"_id": "...", ...})
+        """
+
+        show = self._get(self._build_url(f'/random/show'))
+
+        if show:
+            self.log.info(f'Got random show {show["_id"]}')
             return show
         return None
 
@@ -153,36 +181,62 @@ class PopcornTime:
         logging.info('No torrents meet the minimum requirements and no torrent to revert to')
         return None
 
+    def get_movies_stats(self) -> (requests.Response.json, None):
+        """
+            Get the movies stats
+
+            :return: dict (Example: {"action & adventure": {"count": 600, "title": "Action & Adventure"}})
+        """
+
+        stats = self._get(self._build_url('/movies/stat'))
+
+        if stats:
+            self.log.info('Got movies stats')
+            return stats
+        return None
+
     def get_movies_page(self, page: (int, str)) -> (requests.Response.json, None):
         """
-            Gets the shows page
+            Gets the movies page
 
             :param page: int (Example: 1)
             :return: dict (Example: {_id: "...", ...})
         """
 
-        shows = self._get(self._build_url(f'/movies/{page}'))
+        movies = self._get(self._build_url(f'/movies/{page}'))
 
-        if shows:
+        if movies:
             self.log.info(f'Got movies page {page}')
-            return shows
+            return movies
         return None
 
     def get_movie(self, movie_id: (int, str)) -> (requests.Response.json, None):
         """
-            Gets the show page
+            Get the movie
 
-            :param movie_id: int (Example: 1)
+            :param movie_id: int (Example: tt1234567)
             :return: dict (Example: {_id: "...", ...})
         """
 
-        show = self._get(self._build_url(f'/movie/{movie_id}'))
+        movie = self._get(self._build_url(f'/movie/{movie_id}'))
 
-        if show:
+        if movie:
             self.log.info(f'Got movie {movie_id}')
-            return show
+            return movie
         return None
 
+    def get_random_movie(self) -> (requests.Response.json, None):
+        """
+            Gets a random movie from the api
+
+            :return: dict (Example: {_id: "...", ...})
+        """
+        movie = self._get(self._build_url(f'/random/movie'))
+
+        if movie:
+            self.log.info(f'Got random movie {movie["_id"]}')
+            return movie
+        return None
 
 class TestPopcorn(unittest.TestCase):
 
