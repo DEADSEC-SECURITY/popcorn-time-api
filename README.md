@@ -73,3 +73,6 @@ popAPI = PopcornTime()
   - torrents : dict, required
     - The dictionary of torrents provided by the API (get_show or get_movie)
   - Returns the best quality torrent is json format
+
+## Legal Notice
+This SDK is not meant to be used for illegal purposes, use it at your own risk and check your local regulations first.
