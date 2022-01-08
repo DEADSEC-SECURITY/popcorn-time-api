@@ -120,6 +120,20 @@ class PopcornTime:
 
         return self._MIN_PEERS
 
+    def get_server_status(self) -> (requests.Response.json, None):
+        """
+            Get the server status
+
+            :return: dict (Example: {"repo": ..., "version": ..., "uptime": ...})
+        """
+
+        status = self._get(self._build_url('/status'))
+
+        if status:
+            self.log.info('Got status')
+            return status
+        return None
+
     def get_shows_stats(self) -> (requests.Response.json, None):
         """
             Get the shows stats
