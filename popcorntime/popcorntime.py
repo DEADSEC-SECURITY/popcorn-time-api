@@ -44,6 +44,34 @@ class PopcornTime:
 
         return urljoin(self._BASE_URL, path)
 
+    @staticmethod
+    def _get_torrent_seeds(torrent):
+        """
+            Movie have different seed name for the same thing so
+            this function will handle that difference
+
+            :param torrent:
+            :return:
+        """
+        try:
+            return torrent['seeds']
+        except KeyError:
+            return torrent['seed']
+
+    @staticmethod
+    def _get_torrent_peers(torrent):
+        """
+            Movie have different seed name for the same thing so
+            this function will handle that difference
+
+            :param torrent:
+            :return:
+        """
+        try:
+            return torrent['peers']
+        except KeyError:
+            return torrent['peer']
+
     def set_logging_level(self, level: int) -> int:
         """
             Sets the logging level
@@ -172,6 +200,14 @@ class PopcornTime:
             :return: tuple<dict, int> (Example: ({"url": "magnet:?xt=urn:btih:..."}, 1080))
         """
 
+        # Some torrents have different "sections" for each language so we will try
+        # to get the en language all the time
+
+        try:
+            torrents = torrents['en']
+        except KeyError:
+            pass
+
         best_quality = -1
         best_quality_torrent = None
         for torrent_quality, torrent_data in torrents.items():
@@ -179,7 +215,8 @@ class PopcornTime:
             quality = int(torrent_quality.replace('p', ''))
             if quality > best_quality:
                 # Check if torrent quality has minimum seeds/peers
-                if torrent_data['seeds'] >= self._MIN_SEEDS and torrent_data['peers'] >= self._MIN_PEERS:
+                if self._get_torrent_seeds(torrent_data) >= self._MIN_SEEDS and \
+                        self._get_torrent_peers(torrent_data) >= self._MIN_PEERS:
                     best_quality = quality
                     best_quality_torrent = torrent_data
 
@@ -252,6 +289,7 @@ class PopcornTime:
             return movie
         return None
 
+
 class TestPopcorn(unittest.TestCase):
 
     def setUp(self):
@@ -262,7 +300,8 @@ class TestPopcorn(unittest.TestCase):
         req = False
         try:
             req = requests.get("https://google.com", timeout=10)
-        except Exception: pass
+        except Exception:
+            pass
 
         if not req:
             logging.error('Testing internet connection failed, please check your connection and try again!')
@@ -270,25 +309,34 @@ class TestPopcorn(unittest.TestCase):
 
         logging.info("Internet connection test was successful")
 
+    def test_get_show_stats(self):
+        self.assertIsNotNone(self.popAPI.get_shows_stats)
+
     def test_get_shows_page(self):
         self.assertIsNotNone(self.popAPI.get_shows_page, 1)
 
     def test_get_show(self):
-        #TODO Add show id from IMDB
-        self.assertIsNotNone(self.popAPI.get_show, "tt")
+        self.assertIsNotNone(self.popAPI.get_show, "tt10160804")
+
+    def test_get_random_show(self):
+        self.assertIsNotNone(self.popAPI.get_random_show)
 
     def test_get_best_quality_torrent(self):
-        # TODO Add show id from IMDB
-        show = self.popAPI.get_show("tt")
+        show = self.popAPI.get_movie("tt0111161")
         torrents = show["torrents"]
         self.assertIsNotNone(self.popAPI.get_best_quality_torrent(torrents))
+
+    def test_get_movies_stats(self):
+        self.assertIsNotNone(self.popAPI.get_movies_stats)
 
     def test_get_movie_page(self):
         self.assertIsNotNone(self.popAPI.get_movies_page, 1)
 
     def test_get_movie(self):
-        # TODO Add movie id from IMDB
-        self.assertIsNotNone(self.popAPI.get_movie, "tt")
+        self.assertIsNotNone(self.popAPI.get_movie, "tt0111161")
+
+    def test_get_random_movie(self):
+        self.assertIsNotNone(self.popAPI.get_random_movie)
 
 
 if __name__ == '__main__':

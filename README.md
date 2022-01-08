@@ -55,11 +55,11 @@ popAPI = PopcornTime()
 - #### FUNCTION `set_min_peers`
   - value : int, required
     - Minimum number of peers to select torrent
-- #### FUNCTION `get_server_status`
-  - Returns the server status in json format
 - #### FUNCTION `get_shows_page`
   - page : (int, str), required
   - Returns the shows page in json format
+- #### FUNCTION `get_movies_stats`
+  - Returns the movies stats in json format
 - #### FUNCTION `get_movies_page`
   - page : (int, str), required
   - Returns the movies page in json format
@@ -71,6 +71,10 @@ popAPI = PopcornTime()
   - movie_id : (int, str), required
     - IMDB ID of the movie
   - Returns the movie data in json format
+- #### FUNCTION `get_random_show`
+  - Returns the show in json format
+- #### FUNCTION `get_random_movie`
+  - Returns the movie in json format
 - #### FUNCTION `get_best_quality_torrent`
   - torrents : dict, required
     - The dictionary of torrents provided by the API (get_show or get_movie)
