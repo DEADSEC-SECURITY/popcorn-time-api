@@ -55,6 +55,10 @@ popAPI = PopcornTime()
 - #### FUNCTION `set_min_peers`
   - value : int, required
     - Minimum number of peers to select torrent
+- #### FUNCTION `get_server_status`
+  - Returns the server status in json format
+- #### FUNCTION `get_shows_stats`
+  - Returns the show stats in json format
 - #### FUNCTION `get_shows_page`
   - page : (int, str), required
   - Returns the shows page in json format
