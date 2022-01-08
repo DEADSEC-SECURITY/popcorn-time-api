@@ -26,15 +26,15 @@ popAPI = PopcornTime()
 
 ## 🤝 PARAMETERS
 ### CLASS PARAMETERS
-- debug : bool, optional
+- **debug** : bool, optional
   - Enable for debug mode (Default: False)
-- min_peers : int, optional
+- **min_peers** : int, optional
   - Minimum number of peers to select torrent (Default: 0)
-- min_seeds : int, optional
+- **min_seeds** : int, optional
   - Minimum number of seeds to select torrent (Default: 0)
 ### FUNCTION PARAMETERS
 - #### FUNCTION `set_logging_level`
-  - level : int, required
+  - **level** : int, required
     - Set the logging level
     - Accepted values:
       - 0: DEBUG
@@ -44,35 +44,35 @@ popAPI = PopcornTime()
       - 4: CRITICAL
       - 5: NOTSET
 - #### FUNCTION `set_base_url`
-  - url : str, required
+  - **url** : str, required
     - Set the base url for the API
 - #### FUNCTION `set_base_url`
-  - url : str, required
+  - **url** : str, required
     - Set the base url for the API
 - #### FUNCTION `set_min_seeds`
-  - value : int, required
+  - **value** : int, required
     - Minimum number of seeds to select torrent
 - #### FUNCTION `set_min_peers`
-  - value : int, required
+  - **value** : int, required
     - Minimum number of peers to select torrent
 - #### FUNCTION `get_server_status`
   - Returns the server status in json format
 - #### FUNCTION `get_shows_stats`
   - Returns the show stats in json format
 - #### FUNCTION `get_shows_page`
-  - page : (int, str), required
+  - **page** : (int, str), required
   - Returns the shows page in json format
 - #### FUNCTION `get_movies_stats`
   - Returns the movies stats in json format
 - #### FUNCTION `get_movies_page`
-  - page : (int, str), required
+  - **page** : (int, str), required
   - Returns the movies page in json format
 - #### FUNCTION `get_show`
-  - show_id : (int, str), required
+  - **show_id** : (int, str), required
     - IMDB ID of the show
   - Returns the show data in json format
 - #### FUNCTION `get_movie`
-  - movie_id : (int, str), required
+  - **movie_id** : (int, str), required
     - IMDB ID of the movie
   - Returns the movie data in json format
 - #### FUNCTION `get_random_show`
@@ -80,7 +80,7 @@ popAPI = PopcornTime()
 - #### FUNCTION `get_random_movie`
   - Returns the movie in json format
 - #### FUNCTION `get_best_quality_torrent`
-  - torrents : dict, required
+  - **torrents** : dict, required
     - The dictionary of torrents provided by the API (get_show or get_movie)
   - Returns the best quality torrent is json format
 
