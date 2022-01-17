@@ -224,10 +224,10 @@ class PopcornTime:
             self.log.info(f'Got best quality torrent {best_quality_torrent["url"]}')
             return best_quality_torrent, best_quality
 
-        # Try to revert to the first torrent if no torrents meet the minimum requirements
-        if torrents[0]:
+        # Try to revert to the default torrent if no torrents meet the minimum requirements
+        if torrents["0"]:
             logging.info('Reverting to first torrent')
-            return torrents[0], 0
+            return torrents["0"], 0
 
         logging.info('No torrents meet the minimum requirements and no torrent to revert to')
         return None
