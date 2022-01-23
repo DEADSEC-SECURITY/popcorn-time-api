@@ -6,7 +6,7 @@ README = (pathlib.Path(__file__).parent / "README.md").read_text(encoding='utf8'
 setup(
     name='popcorn-time',
     packages=find_packages(),
-    version='0.1.2',
+    version='0.2.0',
     description='Interact with the Popcorn Time API with python',
     long_description=README,
     long_description_content_type='text/markdown',

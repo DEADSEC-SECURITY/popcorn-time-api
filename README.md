@@ -1,4 +1,4 @@
-# Popcorn Time API ![Version](https://img.shields.io/badge/Version-v0.1.2-orange?style=flat-square&url=https://github.com/DEADSEC-SECURITY/popcorn-time-api/blob/main/CHANGELOG.md) ![Python_Version](https://img.shields.io/badge/Python-3.7%2B-blue?style=flat-square) ![License](https://img.shields.io/badge/License-MIT-red?style=flat-square) ![Donate](https://img.shields.io/badge/Donate-Crypto-yellow?style=flat-square) [![CodeQL](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml) [![Downloads](https://pepy.tech/badge/popcorn-time)](https://pepy.tech/project/popcorn-time) [![Downloads](https://pepy.tech/badge/popcorn-time/month)](https://pepy.tech/project/popcorn-time)
+# Popcorn Time API ![Version](https://img.shields.io/badge/Version-v0.2.0-orange?style=flat-square&url=https://github.com/DEADSEC-SECURITY/popcorn-time-api/blob/main/CHANGELOG.md) ![Python_Version](https://img.shields.io/badge/Python-3.7%2B-blue?style=flat-square) ![License](https://img.shields.io/badge/License-MIT-red?style=flat-square) ![Donate](https://img.shields.io/badge/Donate-Crypto-yellow?style=flat-square) [![CodeQL](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml) [![Downloads](https://pepy.tech/badge/popcorn-time)](https://pepy.tech/project/popcorn-time) [![Downloads](https://pepy.tech/badge/popcorn-time/month)](https://pepy.tech/project/popcorn-time)
  
 ## 📝 CONTRIBUTIONS
 
@@ -52,9 +52,6 @@ popAPI = PopcornTime()
 - #### FUNCTION `set_min_seeds`
   - **value** : int, required
     - Minimum number of seeds to select torrent
-- #### FUNCTION `set_min_peers`
-  - **value** : int, required
-    - Minimum number of peers to select torrent
 - #### FUNCTION `get_server_status`
   - Returns the server status in json format
 - #### FUNCTION `get_shows_stats`
@@ -79,10 +76,14 @@ popAPI = PopcornTime()
   - Returns the show in json format
 - #### FUNCTION `get_random_movie`
   - Returns the movie in json format
-- #### FUNCTION `get_best_quality_torrent`
+- #### FUNCTION `get_best_torrent`
   - **torrents** : dict, required
     - The dictionary of torrents provided by the API (get_show or get_movie)
-  - Returns the best quality torrent is json format
+  - **min_quality** : int, optional
+    - Minimum quality to select torrent (Default: '1080')
+  - **revert_to_default** : bool, optional
+    - Revert to default item if no torrents are found (Default: False)
+  - Returns the best torrent is json format
 
 ## Legal Notice
 This SDK is not meant to be used for illegal purposes, use it at your own risk and check your local regulations first.

@@ -6,6 +6,7 @@ Check the following table for information on which versions of this software are
 
 | Version | Supported          |
 | ------- | ------------------ |
+| v0.2.0   | :white_check_mark: |
 | v0.1.2   | :white_check_mark: |
 | v0.1.1   | :white_check_mark: |
 | v0.1.0   | :white_check_mark: |

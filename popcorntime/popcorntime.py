@@ -2,8 +2,19 @@ import requests
 import logging
 import sys
 import unittest
+import functools
 
 from urllib.parse import urljoin
+
+
+# Wrapper for deprecated function
+def deprecated(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        logging.warning(f'The function {func.__name__} is deprecated and will be removed in the next major release.')
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 class PopcornTime:
@@ -59,6 +70,7 @@ class PopcornTime:
             return torrent['seed']
 
     @staticmethod
+    @deprecated
     def _get_torrent_peers(torrent):
         """
             Movie have different seed name for the same thing so
@@ -96,6 +108,7 @@ class PopcornTime:
 
         return self._BASE_URL
 
+    @deprecated
     def set_min_seeds(self, value: int) -> int:
         """
             Sets the base URL
@@ -108,6 +121,7 @@ class PopcornTime:
 
         return self._MIN_SEEDS
 
+    @deprecated
     def set_min_peers(self, value: int) -> int:
         """
             Sets the base URL
@@ -192,6 +206,49 @@ class PopcornTime:
             return show
         return None
 
+    def get_best_torrent(self, torrents: dict, min_quality: int = 1080, revert_to_default: bool = False) -> (dict, None):
+        """
+            Get the best torrent
+
+            :param revert_to_default: bool (If True, it will revert to popcorn default torrent)
+            :param torrents: dict (Example: {"720p": ..., "1080p": ...})
+            :param min_quality: int (Example: 1080)
+            :return: dict (Example: {"720p": ..., "1080p": ...})
+        """
+        self.log.info(f'Getting best torrent for quality {min_quality}')
+
+        # Try to select torrents language first
+        try:
+            torrents = torrents['en']
+        except KeyError:
+            pass
+
+        # Make list of torrents with quality > min_quality
+        filtered_torrents = []
+        for quality, torrent in torrents.items():
+            quality = int(quality.replace('p', ''))
+            if quality >= min_quality:
+                filtered_torrents.append(torrent)
+
+        if len(filtered_torrents) == 0:
+            if revert_to_default:
+                self.log.info('No torrents found, reverting to default torrent')
+                try:
+                    return torrents['0']
+                except KeyError:
+                    return None
+            return None
+
+        self.log.info(f'Got {len(filtered_torrents)} torrents with quality >= {min_quality}')
+
+        # Get the torrents with the most seeds
+        filtered_torrents.sort(key=self._get_torrent_seeds, reverse=True)
+
+        self.log.debug(f'Got torrent with most seeds: {filtered_torrents[0]}')
+
+        return filtered_torrents[0]
+
+    @deprecated
     def get_best_quality_torrent(self, torrents: dict) -> (tuple, None):
         """
             Gets the show torrent with the best quality
@@ -321,10 +378,12 @@ class TestPopcorn(unittest.TestCase):
     def test_get_random_show(self):
         self.assertIsNotNone(self.popAPI.get_random_show)
 
-    def test_get_best_quality_torrent(self):
-        show = self.popAPI.get_movie("tt0111161")
-        torrents = show["torrents"]
-        self.assertIsNotNone(self.popAPI.get_best_quality_torrent(torrents))
+    def test_get_best_torrent(self):
+        movie = self.popAPI.get_movie("tt0111161")
+        torrents = movie["torrents"]
+        best = self.popAPI.get_best_torrent(torrents)
+        print(best)
+        self.assertIsNotNone(best)
 
     def test_get_movies_stats(self):
         self.assertIsNotNone(self.popAPI.get_movies_stats)
