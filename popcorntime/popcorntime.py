@@ -18,7 +18,7 @@ def deprecated(func):
 
 
 class PopcornTime:
-    _BASE_URL: str = 'https://popcorn-ru.tk/'
+    _BASE_URL: str = 'https://popcorn-time.ga/'
     _MIN_SEEDS: int = 0
     _MIN_PEERS: int = 0
 
