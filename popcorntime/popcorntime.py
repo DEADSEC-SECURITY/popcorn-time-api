@@ -226,6 +226,9 @@ class PopcornTime:
         # Make list of torrents with quality > min_quality
         filtered_torrents = []
         for quality, torrent in torrents.items():
+            if 'd' in quality.lower():
+                continue
+
             quality = int(quality.replace('p', ''))
             if quality >= min_quality:
                 filtered_torrents.append(torrent)
