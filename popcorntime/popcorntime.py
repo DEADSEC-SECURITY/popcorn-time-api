@@ -34,11 +34,14 @@ def beta(func):
 
 class PopcornTime:
     _BASE_URL: str = 'https://popcorn-time.ga/'
+    _LANGUAGE: str = 'en'
 
-    def __init__(self, debug: bool = False):
+    def __init__(self, debug: bool = False, language: str = 'en'):
         self.log = logging.getLogger(__name__)
         self.log.setLevel(logging.DEBUG if debug else logging.INFO)
         self.log.addHandler(logging.StreamHandler(sys.stdout))
+
+        self._LANGUAGE = language
 
     def _get(self, url: str, **kwargs) -> Optional[requests.Response.json]:
         """
@@ -79,29 +82,50 @@ class PopcornTime:
         except KeyError:
             return torrent['seed']
 
-    def set_logging_level(self, level: int) -> int:
-        """
-            Sets the logging level
+    """PROPERTIES START"""
 
-            :param level: int (Example: logging.DEBUG)
-            :return: int (Example: logging.DEBUG)
-        """
+    @property
+    def logging_level(self):
+        return self.log.getEffectiveLevel()
 
+    @logging_level.setter
+    def logging_level(self, level):
         self.log.setLevel(level)
 
-        return level
+    @property
+    def base_url(self) -> str:
+        return self._BASE_URL
 
-    def set_base_url(self, url: str) -> str:
-        """
-            Sets the base URL
-
-            :param url: string (Example: "http://popcorntime.com")
-            :return: string (Example: "http://popcorntime.com")
-        """
-
+    @base_url.setter
+    def base_url(self, url: str):
         self._BASE_URL = url
 
-        return self._BASE_URL
+    @property
+    def language(self) -> str:
+        return self._LANGUAGE
+
+    @language.setter
+    def language(self, language: str):
+        self._LANGUAGE = language.lower()
+
+    """PROPERTIES END"""
+
+    def _select_torrents_language(self, torrents: dict) -> dict:
+        """
+            Select the torrents language based on the language set if the language is not found
+            it will revert to the first available language
+
+            :param torrents: dict (Example: {"...": {"...": "..."}})
+            :return:
+        """
+
+        torrents_language: list = list(torrents.keys())
+        torrents_language: list = [language.lower() for language in torrents_language]
+
+        if self._LANGUAGE in torrents_language:
+            return torrents[self._LANGUAGE]
+
+        return torrents[torrents_language[0]]
 
     def get_server_status(self) -> Optional[requests.Response.json]:
         """
@@ -116,6 +140,8 @@ class PopcornTime:
             self.log.info('Got status')
             return status
         return None
+
+    """SHOWS START"""
 
     def get_shows_stats(self) -> Optional[requests.Response.json]:
         """
@@ -175,89 +201,9 @@ class PopcornTime:
             return show
         return None
 
-    def get_best_torrent(self, torrents: dict, min_quality: int = 1080,
-                         revert_to_default: bool = False,
-                         language: str = 'en') -> Optional[dict]:
-        """
-            Get the best torrent
+    """SHOWS END"""
 
-            :param language:
-            :param revert_to_default: bool (If True, it will revert to popcorn default torrent)
-            :param torrents: dict (Example: {"720p": ..., "1080p": ...})
-            :param min_quality: int (Example: 1080)
-            :return: dict (Example: {"720p": ..., "1080p": ...})
-        """
-        self.log.info(f'Getting best torrent for quality {min_quality}')
-
-        # Try to select torrents' language first
-        try:
-            torrents = torrents[language]
-        except KeyError:
-            logging.warning('Language not found or not existent for torrent list')
-
-        # Make list of torrents with quality > min_quality
-        filtered_torrents = []
-        for quality, torrent in torrents.items():
-            if 'd' in quality.lower():
-                continue
-
-            quality = int(quality.replace('p', ''))
-            if quality >= min_quality:
-                filtered_torrents.append(torrent)
-
-        if not filtered_torrents:
-            if revert_to_default:
-                self.log.info('No torrents found, reverting to default torrent')
-                try:
-                    return torrents['0']
-                except KeyError:
-                    return None
-            return None
-
-        self.log.info(f'Got {len(filtered_torrents)} torrents with quality >= {min_quality}')
-
-        # Get the torrents with the most seeds
-        filtered_torrents.sort(key=self._get_torrent_seeds, reverse=True)
-
-        self.log.debug(f'Got torrent with most seeds: {filtered_torrents[0]}')
-
-        return filtered_torrents[0]
-
-    @beta
-    def remove_cam_torrents(self, torrents: dict, language: Optional[str] = 'en') -> Optional[dict]:
-        """
-            Remove torrents that where filmed by a camera
-            These are normally those films that where filmed inside the cinema which
-            are really annoying to watch
-
-            :param language:
-            :param torrents: dict (Example: {"720p": ..., "1080p": ...})
-            :return: dict (Example: {"720p": ..., "1080p": ...})
-        """
-
-        self.log.info('Removing camera filmed torrents')
-
-        # Try to select torrents' language first
-        try:
-            torrents = torrents[language]
-        except KeyError:
-            logging.warning('Language not found or not existent for torrent list')
-
-        # Make list of torrents with quality > min_quality
-        filtered_torrents = {}
-        for quality, torrent in torrents.items():
-            url = torrent['url']
-            if 'HDCAM' in url or 'CAM' in url:
-                continue
-            filtered_torrents[quality] = torrent
-
-        if not filtered_torrents:
-            logging.warning('All torrents were camera filmed')
-            return None
-
-        self.log.info(f'Got {len(filtered_torrents)} not filmed by camera')
-
-        return filtered_torrents
+    """MOVIES START"""
 
     def get_movies_stats(self) -> Optional[requests.Response.json]:
         """
@@ -315,6 +261,86 @@ class PopcornTime:
             self.log.info(f'Got random movie {movie["_id"]}')
             return movie
         return None
+
+    """MOVIES END"""
+
+    """AUXILIARY METHODS START"""
+
+    def get_best_torrent(self, torrents: dict, min_quality: int = 1080,
+                         revert_to_default: bool = False) -> Optional[dict]:
+        """
+            Get the best torrent
+
+            :param revert_to_default: bool (If True, it will revert to popcorn default torrent)
+            :param torrents: dict (Example: {"720p": ..., "1080p": ...})
+            :param min_quality: int (Example: 1080)
+            :return: dict (Example: {"720p": ..., "1080p": ...})
+        """
+        self.log.info(f'Getting best torrent for quality {min_quality}')
+
+        torrents = self._select_torrents_language(torrents)
+
+        # Make list of torrents with quality > min_quality
+        filtered_torrents = []
+        for quality, torrent in torrents.items():
+            if 'd' in quality.lower():
+                continue
+
+            quality = int(quality.replace('p', ''))
+            if quality >= min_quality:
+                filtered_torrents.append(torrent)
+
+        if not filtered_torrents:
+            if revert_to_default:
+                self.log.info('No torrents found, reverting to default torrent')
+                try:
+                    return torrents['0']
+                except KeyError:
+                    return None
+            return None
+
+        self.log.info(f'Got {len(filtered_torrents)} torrents with quality >= {min_quality}')
+
+        # Get the torrents with the most seeds
+        filtered_torrents.sort(key=self._get_torrent_seeds, reverse=True)
+
+        self.log.debug(f'Got torrent with most seeds: {filtered_torrents[0]}')
+
+        return filtered_torrents[0]
+
+    @beta
+    def remove_cam_torrents(self, torrents: dict) -> Optional[dict]:
+        """
+            Remove torrents that where filmed by a camera
+            These are normally those films that where filmed inside the cinema which
+            are really annoying to watch
+
+            :param language:
+            :param torrents: dict (Example: {"720p": ..., "1080p": ...})
+            :return: dict (Example: {"720p": ..., "1080p": ...})
+        """
+
+        self.log.info('Removing camera filmed torrents')
+
+        torrents = self._select_torrents_language(torrents)
+
+        # Make list of torrents with quality > min_quality
+        filtered_torrents = {}
+        for quality, torrent in torrents.items():
+            url = torrent['url']
+            if 'HDCAM' in url or 'CAM' in url:
+                continue
+            filtered_torrents[quality] = torrent
+
+        if not filtered_torrents:
+            logging.warning('All torrents were camera filmed')
+            return None
+
+        self.log.info(f'Got {len(filtered_torrents)} not filmed by camera')
+
+        return filtered_torrents
+
+    """AUXILIARY METHODS END"""
 
 
 class TestPopcorn(unittest.TestCase):
