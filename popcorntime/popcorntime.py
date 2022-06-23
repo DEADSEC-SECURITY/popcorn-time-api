@@ -1,3 +1,6 @@
+import warnings
+from typing import Optional
+
 import requests
 import logging
 import sys
@@ -11,7 +14,19 @@ from urllib.parse import urljoin
 def deprecated(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        logging.warning(f'The function {func.__name__} is deprecated and will be removed in the next major release.')
+        logging.warning(
+            f'The function {func.__name__} is deprecated and will be removed in the next major release.')
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+# Wrapper for beta functions
+def beta(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        logging.warning(f'The function {func.__name__} is in BETA so might not work 100% of the '
+                        f'times.')
         return func(*args, **kwargs)
 
     return wrapper
@@ -206,10 +221,13 @@ class PopcornTime:
             return show
         return None
 
-    def get_best_torrent(self, torrents: dict, min_quality: int = 1080, revert_to_default: bool = False) -> (dict, None):
+    def get_best_torrent(self, torrents: dict, min_quality: int = 1080,
+                         revert_to_default: bool = False,
+                         language: Optional[str] = 'en') -> Optional[dict]:
         """
             Get the best torrent
 
+            :param language:
             :param revert_to_default: bool (If True, it will revert to popcorn default torrent)
             :param torrents: dict (Example: {"720p": ..., "1080p": ...})
             :param min_quality: int (Example: 1080)
@@ -217,11 +235,11 @@ class PopcornTime:
         """
         self.log.info(f'Getting best torrent for quality {min_quality}')
 
-        # Try to select torrents language first
+        # Try to select torrents' language first
         try:
-            torrents = torrents['en']
+            torrents = torrents[language]
         except KeyError:
-            pass
+            logging.warning('Language not found or not existent for torrent list')
 
         # Make list of torrents with quality > min_quality
         filtered_torrents = []
@@ -233,7 +251,7 @@ class PopcornTime:
             if quality >= min_quality:
                 filtered_torrents.append(torrent)
 
-        if len(filtered_torrents) == 0:
+        if not filtered_torrents:
             if revert_to_default:
                 self.log.info('No torrents found, reverting to default torrent')
                 try:
@@ -250,6 +268,42 @@ class PopcornTime:
         self.log.debug(f'Got torrent with most seeds: {filtered_torrents[0]}')
 
         return filtered_torrents[0]
+
+    @beta
+    def remove_cam_torrents(self, torrents: dict, language: Optional[str] = 'en') -> Optional[dict]:
+        """
+            Remove torrents that where filmed by a camera
+            These are normally those films that where filmed inside the cinema which
+            are really annoying to watch
+
+            :param language:
+            :param torrents: dict (Example: {"720p": ..., "1080p": ...})
+            :return: dict (Example: {"720p": ..., "1080p": ...})
+        """
+
+        self.log.info('Removing camera filmed torrents')
+
+        # Try to select torrents' language first
+        try:
+            torrents = torrents[language]
+        except KeyError:
+            logging.warning('Language not found or not existent for torrent list')
+
+        # Make list of torrents with quality > min_quality
+        filtered_torrents = {}
+        for quality, torrent in torrents.items():
+            url = torrent['url']
+            if 'HDCAM' in url or 'CAM' in url:
+                continue
+            filtered_torrents[quality] = torrent
+
+        if not filtered_torrents:
+            logging.warning('All torrents were camera filmed')
+            return None
+
+        self.log.info(f'Got {len(filtered_torrents)} not filmed by camera')
+
+        return filtered_torrents
 
     @deprecated
     def get_best_quality_torrent(self, torrents: dict) -> (tuple, None):
@@ -364,7 +418,8 @@ class TestPopcorn(unittest.TestCase):
             pass
 
         if not req:
-            logging.error('Testing internet connection failed, please check your connection and try again!')
+            logging.error(
+                'Testing internet connection failed, please check your connection and try again!')
             sys.exit()
 
         logging.info("Internet connection test was successful")
@@ -387,6 +442,21 @@ class TestPopcorn(unittest.TestCase):
         best = self.popAPI.get_best_torrent(torrents)
         print(best)
         self.assertIsNotNone(best)
+
+    def test_remove_cam_torrents(self):
+        # Test with a movie with all camera torrents
+        movie = self.popAPI.get_movie("tt8041270")
+        torrents = movie["torrents"]
+        no_cam = self.popAPI.remove_cam_torrents(torrents)
+        print(no_cam)
+        self.assertIsNone(no_cam)
+
+        # Test with a movie with no camera torrents
+        movie = self.popAPI.get_movie("tt1285016")
+        torrents = movie["torrents"]
+        no_cam = self.popAPI.remove_cam_torrents(torrents)
+        print(no_cam)
+        self.assertIsNotNone(no_cam)
 
     def test_get_movies_stats(self):
         self.assertIsNotNone(self.popAPI.get_movies_stats)
