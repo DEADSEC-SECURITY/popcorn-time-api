@@ -1,4 +1,4 @@
-If you enjoy my work consider making a donation to help me be able to work full time in my projects. If you dont wanto to donate but want to contribute in a diferent way, that 100% ok, you can do that by forking my pojects with usefull implementation of recomending new features for me to add.
+If you enjoy my work consider making a donation to help me be able to work full time in my projects. If you dont want to donate but want to contribute in a diferent way, that 100% ok, you can do that by forking my pojects with usefull implementation of recomending new features for me to add.
 
 For developers contributing check https://github.com/popcorn-time-ru/popcorn-ru for the API endpoints
 
