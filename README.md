@@ -84,6 +84,10 @@ popAPI = PopcornTime()
   - **revert_to_default** : bool, optional
     - Revert to default item if no torrents are found (Default: False)
   - Returns the best torrent is json format
+- #### FUNCTION `remove_cam_torrents`
+  - **torrents** : dict, required
+    - The dictionary of torrents provided by the API (get_show or get_movie)
+  - Returns all the torrents without cam in json format
 
 ## Legal Notice
 This SDK is not meant to be used for illegal purposes, use it at your own risk and check your local regulations first.
