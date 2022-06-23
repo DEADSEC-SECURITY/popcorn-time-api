@@ -1,5 +1,5 @@
 import warnings
-from typing import Optional
+from typing import Optional, Union
 
 import requests
 import logging
@@ -34,18 +34,13 @@ def beta(func):
 
 class PopcornTime:
     _BASE_URL: str = 'https://popcorn-time.ga/'
-    _MIN_SEEDS: int = 0
-    _MIN_PEERS: int = 0
 
     def __init__(self, debug: bool = False, min_peers: int = 0, min_seeds: int = 0):
         self.log = logging.getLogger(__name__)
         self.log.setLevel(logging.DEBUG if debug else logging.INFO)
         self.log.addHandler(logging.StreamHandler(sys.stdout))
 
-        self._MIN_PEERS = min_peers
-        self._MIN_SEEDS = min_seeds
-
-    def _get(self, url: str, **kwargs) -> (requests.Response.json, None):
+    def _get(self, url: str, **kwargs) -> Optional[requests.Response.json]:
         """
             Performs a GET request to the url provided and returns the response
 
@@ -84,21 +79,6 @@ class PopcornTime:
         except KeyError:
             return torrent['seed']
 
-    @staticmethod
-    @deprecated
-    def _get_torrent_peers(torrent):
-        """
-            Movie have different seed name for the same thing so
-            this function will handle that difference
-
-            :param torrent:
-            :return:
-        """
-        try:
-            return torrent['peers']
-        except KeyError:
-            return torrent['peer']
-
     def set_logging_level(self, level: int) -> int:
         """
             Sets the logging level
@@ -123,33 +103,7 @@ class PopcornTime:
 
         return self._BASE_URL
 
-    @deprecated
-    def set_min_seeds(self, value: int) -> int:
-        """
-            Sets the base URL
-
-            :param value: int (Example: 50)
-            :return: int (Example: 50)
-        """
-
-        self._MIN_SEEDS = value
-
-        return self._MIN_SEEDS
-
-    @deprecated
-    def set_min_peers(self, value: int) -> int:
-        """
-            Sets the base URL
-
-            :param value: int (Example: 50)
-            :return: int (Example: 50)
-        """
-
-        self._MIN_PEERS = value
-
-        return self._MIN_PEERS
-
-    def get_server_status(self) -> (requests.Response.json, None):
+    def get_server_status(self) -> Optional[requests.Response.json]:
         """
             Get the server status
 
@@ -163,7 +117,7 @@ class PopcornTime:
             return status
         return None
 
-    def get_shows_stats(self) -> (requests.Response.json, None):
+    def get_shows_stats(self) -> Optional[requests.Response.json]:
         """
             Get the shows stats
 
@@ -177,7 +131,7 @@ class PopcornTime:
             return stats
         return None
 
-    def get_shows_page(self, page: (int, str)) -> (requests.Response.json, None):
+    def get_shows_page(self, page: (int, str)) -> Optional[requests.Response.json]:
         """
             Gets the shows page
 
@@ -192,7 +146,7 @@ class PopcornTime:
             return shows
         return None
 
-    def get_show(self, show_id: (int, str)) -> (requests.Response.json, None):
+    def get_show(self, show_id: (int, str)) -> Optional[requests.Response.json]:
         """
             Get the show
 
@@ -207,7 +161,7 @@ class PopcornTime:
             return show
         return None
 
-    def get_random_show(self) -> (requests.Response.json, None):
+    def get_random_show(self) -> Optional[requests.Response.json]:
         """
             Get a random show
 
@@ -223,7 +177,7 @@ class PopcornTime:
 
     def get_best_torrent(self, torrents: dict, min_quality: int = 1080,
                          revert_to_default: bool = False,
-                         language: Optional[str] = 'en') -> Optional[dict]:
+                         language: str = 'en') -> Optional[dict]:
         """
             Get the best torrent
 
@@ -305,48 +259,7 @@ class PopcornTime:
 
         return filtered_torrents
 
-    @deprecated
-    def get_best_quality_torrent(self, torrents: dict) -> (tuple, None):
-        """
-            Gets the show torrent with the best quality
-
-            :param torrents: dict (Example: {"0": {"url": "magnet:?xt=urn:btih:..."}})
-            :return: tuple<dict, int> (Example: ({"url": "magnet:?xt=urn:btih:..."}, 1080))
-        """
-
-        # Some torrents have different "sections" for each language so we will try
-        # to get the en language all the time
-
-        try:
-            torrents = torrents['en']
-        except KeyError:
-            pass
-
-        best_quality = -1
-        best_quality_torrent = None
-        for torrent_quality, torrent_data in torrents.items():
-            # The dictionary identified is the quality but we need to make sure it's a number
-            quality = int(torrent_quality.replace('p', ''))
-            if quality > best_quality:
-                # Check if torrent quality has minimum seeds/peers
-                if self._get_torrent_seeds(torrent_data) >= self._MIN_SEEDS and \
-                        self._get_torrent_peers(torrent_data) >= self._MIN_PEERS:
-                    best_quality = quality
-                    best_quality_torrent = torrent_data
-
-        if best_quality_torrent:
-            self.log.info(f'Got best quality torrent {best_quality_torrent["url"]}')
-            return best_quality_torrent, best_quality
-
-        # Try to revert to the default torrent if no torrents meet the minimum requirements
-        if torrents["0"]:
-            logging.info('Reverting to first torrent')
-            return torrents["0"], 0
-
-        logging.info('No torrents meet the minimum requirements and no torrent to revert to')
-        return None
-
-    def get_movies_stats(self) -> (requests.Response.json, None):
+    def get_movies_stats(self) -> Optional[requests.Response.json]:
         """
             Get the movies stats
 
@@ -360,7 +273,7 @@ class PopcornTime:
             return stats
         return None
 
-    def get_movies_page(self, page: (int, str)) -> (requests.Response.json, None):
+    def get_movies_page(self, page: Union[int, str]) -> Optional[requests.Response.json]:
         """
             Gets the movies page
 
@@ -375,7 +288,7 @@ class PopcornTime:
             return movies
         return None
 
-    def get_movie(self, movie_id: (int, str)) -> (requests.Response.json, None):
+    def get_movie(self, movie_id: Union[int, str]) -> Optional[requests.Response.json]:
         """
             Get the movie
 
@@ -390,7 +303,7 @@ class PopcornTime:
             return movie
         return None
 
-    def get_random_movie(self) -> (requests.Response.json, None):
+    def get_random_movie(self) -> Optional[requests.Response.json]:
         """
             Gets a random movie from the api
 
