@@ -35,7 +35,7 @@ def beta(func):
 class PopcornTime:
     _BASE_URL: str = 'https://popcorn-time.ga/'
 
-    def __init__(self, debug: bool = False, min_peers: int = 0, min_seeds: int = 0):
+    def __init__(self, debug: bool = False):
         self.log = logging.getLogger(__name__)
         self.log.setLevel(logging.DEBUG if debug else logging.INFO)
         self.log.addHandler(logging.StreamHandler(sys.stdout))
