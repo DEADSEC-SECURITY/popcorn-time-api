@@ -122,6 +122,14 @@ class PopcornTime:
         torrents_language: list = list(torrents.keys())
         torrents_language: list = [language.lower() for language in torrents_language]
 
+        """
+            Some torrents may not have a selectable language so to figure this out
+            we check if the "language" contains any digits cuz if it does it probably a resolution
+            and not a language
+        """
+        if any(map(str.isdigit, torrents_language[0])):
+            return torrents
+
         if self._LANGUAGE in torrents_language:
             return torrents[self._LANGUAGE]
 
