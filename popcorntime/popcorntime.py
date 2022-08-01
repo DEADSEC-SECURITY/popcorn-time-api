@@ -1,40 +1,32 @@
-import warnings
+#  Copyright (c) 2022.
+#  All rights reserved to the creator of the following script/program/app, please do not
+#  use or distribute without prior authorization from the creator.
+#  Creator: Antonio Manuel Nunes Goncalves
+#  Email: amng835@gmail.com
+#  LinkedIn: https://www.linkedin.com/in/antonio-manuel-goncalves-983926142/
+#  Github: https://github.com/DEADSEC-SECURITY
+
 from typing import Optional, Union
 
 import requests
 import logging
 import sys
 import unittest
-import functools
+
 
 from urllib.parse import urljoin
-
-
-# Wrapper for deprecated function
-def deprecated(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        logging.warning(
-            f'The function {func.__name__} is deprecated and will be removed in the next major release.')
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-# Wrapper for beta functions
-def beta(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        logging.warning(f'The function {func.__name__} is in BETA so might not work 100% of the '
-                        f'times.')
-        return func(*args, **kwargs)
-
-    return wrapper
+from .wrapers import deprecated, beta
 
 
 class PopcornTime:
     _BASE_URL: str = 'https://popcorn-time.ga/'
     _LANGUAGE: str = 'en'
+    _CAM_KEYWORDS: list = [
+        'CAM',
+        'HDCAM',
+        'TS',
+        'TELESYNC',
+    ]
 
     def __init__(self, debug: bool = False, language: str = 'en'):
         self.log = logging.getLogger(__name__)
@@ -108,6 +100,13 @@ class PopcornTime:
     def language(self, language: str):
         self._LANGUAGE = language.lower()
 
+    @property
+    def cam_keywords(self) -> list:
+        return self._CAM_KEYWORDS
+
+    @cam_keywords.setter
+    def cam_keywords(self, keywords: list):
+        self._CAM_KEYWORDS = keywords
     """PROPERTIES END"""
 
     def _select_torrents_language(self, torrents: dict) -> dict:
@@ -336,7 +335,7 @@ class PopcornTime:
         filtered_torrents = {}
         for quality, torrent in torrents.items():
             url = torrent['url']
-            if 'HDCAM' in url or 'CAM' in url:
+            if any(keyword in url for keyword in self._CAM_KEYWORDS):
                 continue
             filtered_torrents[quality] = torrent
 
