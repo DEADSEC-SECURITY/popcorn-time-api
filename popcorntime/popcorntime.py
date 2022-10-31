@@ -25,7 +25,9 @@ class PopcornTime:
         'CAM',
         'HDCAM',
         'TS',
+        'TC'
         'TELESYNC',
+        'HDTS'
     ]
 
     def __init__(self, debug: bool = False, language: str = 'en'):
