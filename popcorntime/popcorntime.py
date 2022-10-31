@@ -15,7 +15,7 @@ import unittest
 
 
 from urllib.parse import urljoin
-from popcorntime.wrapers import deprecated, beta
+from .wrapers import deprecated, beta
 
 
 class PopcornTime:
