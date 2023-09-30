@@ -24,7 +24,7 @@ setup(
     ],
     license='MIT',
     install_requires=[
-        'requests==2.27.1'
+        'requests==2.31.0'
     ],
     python_requires='>=3.7'
 )
