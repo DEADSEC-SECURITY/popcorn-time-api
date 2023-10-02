@@ -1,1 +1,0 @@
-from .popcorntime import PopcornTime
