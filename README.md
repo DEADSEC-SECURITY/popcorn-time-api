@@ -3,7 +3,7 @@
 [![CodeQL](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/python-app.yml/badge.svg)](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml)
 
 ![PyPI - Downloads](https://img.shields.io/pypi/dd/popcorn-time?label=Daily%20Downloads&style=flat-square) ![PyPI - Downloads](https://img.shields.io/pypi/dw/popcorn-time?label=Weekly%20Downloads&style=flat-square) ![PyPI - Downloads](https://img.shields.io/pypi/dm/popcorn-time?label=Monthly%20Downloads&style=flat-square)
- 
+
 ## 📝 CONTRIBUTIONS
 
 Before doing any contribution read <a href="https://github.com/DEADSEC-SECURITY/popcorn-time-api/blob/main/CONTRIBUTING.md">CONTRIBUTING</a>.

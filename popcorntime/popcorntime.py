@@ -15,22 +15,15 @@ import unittest
 
 
 from urllib.parse import urljoin
-from .wrapers import deprecated, beta
+from .wrapers import beta
 
 
 class PopcornTime:
-    _BASE_URL: str = 'https://popcorn-time.ga/'
-    _LANGUAGE: str = 'en'
-    _CAM_KEYWORDS: list = [
-        'CAM',
-        'HDCAM',
-        'TS',
-        'TC'
-        'TELESYNC',
-        'HDTS'
-    ]
+    _BASE_URL: str = "https://popcorn-time.ga/"
+    _LANGUAGE: str = "en"
+    _CAM_KEYWORDS: list = ["CAM", "HDCAM", "TS", "TC" "TELESYNC", "HDTS"]
 
-    def __init__(self, debug: bool = False, language: str = 'en'):
+    def __init__(self, debug: bool = False, language: str = "en"):
         self.log = logging.getLogger(__name__)
         self.log.setLevel(logging.DEBUG if debug else logging.INFO)
         self.log.addHandler(logging.StreamHandler(sys.stdout))
@@ -39,25 +32,27 @@ class PopcornTime:
 
     def _get(self, url: str, **kwargs) -> Optional[requests.Response.json]:
         """
-            Performs a GET request to the url provided and returns the response
+        Performs a GET request to the url provided and returns the response
 
-            :param url: str (Example: "http://popcorntime.com/shows")
-            :param kwargs: dict (Example: {"headers": {"X-Requested-With": "XMLHttpRequest"}})
-            :return: dict (Example: {"status": "success", "data": {"shows": []}})
+        :param url: str (Example: "http://popcorntime.com/shows")
+        :param kwargs: dict (Example: {"headers": {"X-Requested-With": "XMLHttpRequest"}})
+        :return: dict (Example: {"status": "success", "data": {"shows": []}})
         """
 
         req = requests.get(url, **kwargs)
         if req.status_code != 200:
-            self.log.error(f'Request to {url} failed with status code {req.status_code}')
+            self.log.error(
+                f"Request to {url} failed with status code {req.status_code}"
+            )
             return None
         return req.json()
 
     def _build_url(self, path: str) -> str:
         """
-            Builds a URL from the base URL and the path
+        Builds a URL from the base URL and the path
 
-            :param path: string (Example: "/shows")
-            :return: string (Example: "http://popcorntime.com/shows")
+        :param path: string (Example: "/shows")
+        :return: string (Example: "http://popcorntime.com/shows")
         """
 
         return urljoin(self._BASE_URL, path)
@@ -65,16 +60,16 @@ class PopcornTime:
     @staticmethod
     def _get_torrent_seeds(torrent):
         """
-            Movie have different seed name for the same thing so
-            this function will handle that difference
+        Movie have different seed name for the same thing so
+        this function will handle that difference
 
-            :param torrent:
-            :return:
+        :param torrent:
+        :return:
         """
         try:
-            return torrent['seeds']
+            return torrent["seeds"]
         except KeyError:
-            return torrent['seed']
+            return torrent["seed"]
 
     """PROPERTIES START"""
 
@@ -109,15 +104,16 @@ class PopcornTime:
     @cam_keywords.setter
     def cam_keywords(self, keywords: list):
         self._CAM_KEYWORDS = keywords
+
     """PROPERTIES END"""
 
     def _select_torrents_language(self, torrents: dict) -> dict:
         """
-            Select the torrents language based on the language set if the language is not found
-            it will revert to the first available language
+        Select the torrents language based on the language set if the language is not found
+        it will revert to the first available language
 
-            :param torrents: dict (Example: {"...": {"...": "..."}})
-            :return:
+        :param torrents: dict (Example: {"...": {"...": "..."}})
+        :return:
         """
 
         torrents_language: list = list(torrents.keys())
@@ -138,15 +134,15 @@ class PopcornTime:
 
     def get_server_status(self) -> Optional[requests.Response.json]:
         """
-            Get the server status
+        Get the server status
 
-            :return: dict (Example: {"repo": ..., "version": ..., "uptime": ...})
+        :return: dict (Example: {"repo": ..., "version": ..., "uptime": ...})
         """
 
-        status = self._get(self._build_url('/status'))
+        status = self._get(self._build_url("/status"))
 
         if status:
-            self.log.info('Got status')
+            self.log.info("Got status")
             return status
         return None
 
@@ -154,56 +150,56 @@ class PopcornTime:
 
     def get_shows_stats(self) -> Optional[requests.Response.json]:
         """
-            Get the shows stats
+        Get the shows stats
 
-            :return: dict (Example: {"action & adventure": {"count": 600, "title": "Action & Adventure"}})
+        :return: dict (Example: {"action & adventure": {"count": 600, "title": "Action & Adventure"}})
         """
 
-        stats = self._get(self._build_url('/shows/stat'))
+        stats = self._get(self._build_url("/shows/stat"))
 
         if stats:
-            self.log.info('Got shows stats')
+            self.log.info("Got shows stats")
             return stats
         return None
 
     def get_shows_page(self, page: (int, str)) -> Optional[requests.Response.json]:
         """
-            Gets the shows page
+        Gets the shows page
 
-            :param page: int (Example: 1)
-            :return: dict (Example: {_id: "...", ...})
+        :param page: int (Example: 1)
+        :return: dict (Example: {_id: "...", ...})
         """
 
-        shows = self._get(self._build_url(f'/shows/{page}'))
+        shows = self._get(self._build_url(f"/shows/{page}"))
 
         if shows:
-            self.log.info(f'Got shows page {page}')
+            self.log.info(f"Got shows page {page}")
             return shows
         return None
 
     def get_show(self, show_id: (int, str)) -> Optional[requests.Response.json]:
         """
-            Get the show
+        Get the show
 
-            :param show_id: int (Example: tt1285016)
-            :return: dict (Example: {"status": "success", "data": {"show": {"...show data..."}}}
+        :param show_id: int (Example: tt1285016)
+        :return: dict (Example: {"status": "success", "data": {"show": {"...show data..."}}}
         """
 
-        show = self._get(self._build_url(f'/show/{show_id}'))
+        show = self._get(self._build_url(f"/show/{show_id}"))
 
         if show:
-            self.log.info(f'Got show {show_id}')
+            self.log.info(f"Got show {show_id}")
             return show
         return None
 
     def get_random_show(self) -> Optional[requests.Response.json]:
         """
-            Get a random show
+        Get a random show
 
-            :return: dict (Example: {"_id": "...", ...})
+        :return: dict (Example: {"_id": "...", ...})
         """
 
-        show = self._get(self._build_url(f'/random/show'))
+        show = self._get(self._build_url("/random/show"))
 
         if show:
             self.log.info(f'Got random show {show["_id"]}')
@@ -216,55 +212,57 @@ class PopcornTime:
 
     def get_movies_stats(self) -> Optional[requests.Response.json]:
         """
-            Get the movies stats
+        Get the movies stats
 
-            :return: dict (Example: {"action & adventure": {"count": 600, "title": "Action & Adventure"}})
+        :return: dict (Example: {"action & adventure": {"count": 600, "title": "Action & Adventure"}})
         """
 
-        stats = self._get(self._build_url('/movies/stat'))
+        stats = self._get(self._build_url("/movies/stat"))
 
         if stats:
-            self.log.info('Got movies stats')
+            self.log.info("Got movies stats")
             return stats
         return None
 
-    def get_movies_page(self, page: Union[int, str]) -> Optional[requests.Response.json]:
+    def get_movies_page(
+        self, page: Union[int, str]
+    ) -> Optional[requests.Response.json]:
         """
-            Gets the movies page
+        Gets the movies page
 
-            :param page: int (Example: 1)
-            :return: dict (Example: {_id: "...", ...})
+        :param page: int (Example: 1)
+        :return: dict (Example: {_id: "...", ...})
         """
 
-        movies = self._get(self._build_url(f'/movies/{page}'))
+        movies = self._get(self._build_url(f"/movies/{page}"))
 
         if movies:
-            self.log.info(f'Got movies page {page}')
+            self.log.info(f"Got movies page {page}")
             return movies
         return None
 
     def get_movie(self, movie_id: Union[int, str]) -> Optional[requests.Response.json]:
         """
-            Get the movie
+        Get the movie
 
-            :param movie_id: int (Example: tt1234567)
-            :return: dict (Example: {_id: "...", ...})
+        :param movie_id: int (Example: tt1234567)
+        :return: dict (Example: {_id: "...", ...})
         """
 
-        movie = self._get(self._build_url(f'/movie/{movie_id}'))
+        movie = self._get(self._build_url(f"/movie/{movie_id}"))
 
         if movie:
-            self.log.info(f'Got movie {movie_id}')
+            self.log.info(f"Got movie {movie_id}")
             return movie
         return None
 
     def get_random_movie(self) -> Optional[requests.Response.json]:
         """
-            Gets a random movie from the api
+        Gets a random movie from the api
 
-            :return: dict (Example: {_id: "...", ...})
+        :return: dict (Example: {_id: "...", ...})
         """
-        movie = self._get(self._build_url(f'/random/movie'))
+        movie = self._get(self._build_url("/random/movie"))
 
         if movie:
             self.log.info(f'Got random movie {movie["_id"]}')
@@ -275,77 +273,80 @@ class PopcornTime:
 
     """AUXILIARY METHODS START"""
 
-    def get_best_torrent(self, torrents: dict, min_quality: int = 1080,
-                         revert_to_default: bool = False) -> Optional[dict]:
+    def get_best_torrent(
+        self, torrents: dict, min_quality: int = 1080, revert_to_default: bool = False
+    ) -> Optional[dict]:
         """
-            Get the best torrent
+        Get the best torrent
 
-            :param revert_to_default: bool (If True, it will revert to popcorn default torrent)
-            :param torrents: dict (Example: {"720p": ..., "1080p": ...})
-            :param min_quality: int (Example: 1080)
-            :return: dict (Example: {"720p": ..., "1080p": ...})
+        :param revert_to_default: bool (If True, it will revert to popcorn default torrent)
+        :param torrents: dict (Example: {"720p": ..., "1080p": ...})
+        :param min_quality: int (Example: 1080)
+        :return: dict (Example: {"720p": ..., "1080p": ...})
         """
-        self.log.info(f'Getting best torrent for quality {min_quality}')
+        self.log.info(f"Getting best torrent for quality {min_quality}")
 
         torrents = self._select_torrents_language(torrents)
 
         # Make list of torrents with quality > min_quality
         filtered_torrents = []
         for quality, torrent in torrents.items():
-            if 'd' in quality.lower():
+            if "d" in quality.lower():
                 continue
 
-            quality = int(quality.replace('p', ''))
+            quality = int(quality.replace("p", ""))
             if quality >= min_quality:
                 filtered_torrents.append(torrent)
 
         if not filtered_torrents:
             if revert_to_default:
-                self.log.info('No torrents found, reverting to default torrent')
+                self.log.info("No torrents found, reverting to default torrent")
                 try:
-                    return torrents['0']
+                    return torrents["0"]
                 except KeyError:
                     return None
             return None
 
-        self.log.info(f'Got {len(filtered_torrents)} torrents with quality >= {min_quality}')
+        self.log.info(
+            f"Got {len(filtered_torrents)} torrents with quality >= {min_quality}"
+        )
 
         # Get the torrents with the most seeds
         filtered_torrents.sort(key=self._get_torrent_seeds, reverse=True)
 
-        self.log.debug(f'Got torrent with most seeds: {filtered_torrents[0]}')
+        self.log.debug(f"Got torrent with most seeds: {filtered_torrents[0]}")
 
         return filtered_torrents[0]
 
     @beta
     def remove_cam_torrents(self, torrents: dict) -> Optional[dict]:
         """
-            Remove torrents that where filmed by a camera
-            These are normally those films that where filmed inside the cinema which
-            are really annoying to watch
+        Remove torrents that where filmed by a camera
+        These are normally those films that where filmed inside the cinema which
+        are really annoying to watch
 
-            :param language:
-            :param torrents: dict (Example: {"720p": ..., "1080p": ...})
-            :return: dict (Example: {"720p": ..., "1080p": ...})
+        :param language:
+        :param torrents: dict (Example: {"720p": ..., "1080p": ...})
+        :return: dict (Example: {"720p": ..., "1080p": ...})
         """
 
-        self.log.info('Removing camera filmed torrents')
+        self.log.info("Removing camera filmed torrents")
 
         torrents = self._select_torrents_language(torrents)
 
         # Make list of torrents with quality > min_quality
         filtered_torrents = {}
         for quality, torrent in torrents.items():
-            url = torrent['url']
+            url = torrent["url"]
             if any(keyword in url for keyword in self._CAM_KEYWORDS):
                 continue
             filtered_torrents[quality] = torrent
 
         if not filtered_torrents:
-            logging.warning('All torrents were camera filmed')
+            logging.warning("All torrents were camera filmed")
             return None
 
-        self.log.info(f'Got {len(filtered_torrents)} not filmed by camera')
+        self.log.info(f"Got {len(filtered_torrents)} not filmed by camera")
 
         return filtered_torrents
 
@@ -353,12 +354,11 @@ class PopcornTime:
 
 
 class TestPopcorn(unittest.TestCase):
-
     def setUp(self):
         self.popAPI = PopcornTime()
 
         # Check for internet connection
-        logging.info('Testing internet connection ...')
+        logging.info("Testing internet connection ...")
         req = False
         try:
             req = requests.get("https://google.com", timeout=10)
@@ -367,7 +367,8 @@ class TestPopcorn(unittest.TestCase):
 
         if not req:
             logging.error(
-                'Testing internet connection failed, please check your connection and try again!')
+                "Testing internet connection failed, please check your connection and try again!"
+            )
             sys.exit()
 
         logging.info("Internet connection test was successful")
@@ -419,5 +420,5 @@ class TestPopcorn(unittest.TestCase):
         self.assertIsNotNone(self.popAPI.get_random_movie)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
