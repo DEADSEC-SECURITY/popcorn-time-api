@@ -1,0 +1,33 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: check-byte-order-marker
+      - id: check-merge-conflict
+      - id: check-symlinks
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.5
+    hooks:
+      - id: codespell
+        name: codespell
+        description: Checks for common misspellings in text files.
+        entry: codespell
+        language: python
+        types: [text]
+        args: []
+        require_serial: false
+        additional_dependencies: []
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.0.286"
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+  - repo: https://github.com/psf/black # after ruff, as ruff output may need fixing
+    rev: 23.7.0
+    hooks:
+      - id: black
+        language_version: python3
