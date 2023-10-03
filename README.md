@@ -1,6 +1,6 @@
 # Popcorn Time API ![Version](https://img.shields.io/badge/Version-v1.0.0-orange?style=flat-square&url=https://github.com/DEADSEC-SECURITY/popcorn-time-api/blob/main/CHANGELOG.md) ![Python_Version](https://img.shields.io/badge/Python-3.7%2B-blue?style=flat-square) ![License](https://img.shields.io/badge/License-MIT-red?style=flat-square) ![Donate](https://img.shields.io/badge/Donate-Crypto-yellow?style=flat-square)
 
-[![CodeQL](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/python-app.yml/badge.svg)](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml)
+[![CodeQL](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml/badge.svg?branch=main&style=flat-square)](https://github.com/DEADSEC-SECURITY/popcorn-time-api/actions/workflows/codeql-analysis.yml)
 
 ![PyPI - Downloads](https://img.shields.io/pypi/dd/popcorn-time?label=Daily%20Downloads&style=flat-square) ![PyPI - Downloads](https://img.shields.io/pypi/dw/popcorn-time?label=Weekly%20Downloads&style=flat-square) ![PyPI - Downloads](https://img.shields.io/pypi/dm/popcorn-time?label=Monthly%20Downloads&style=flat-square)
 
