@@ -18,9 +18,10 @@ repos:
         entry: codespell
         language: python
         types: [text]
-        args: []
+        args: [-w]
         require_serial: false
-        additional_dependencies: []
+        additional_dependencies:
+          - tomli
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: "v0.0.286"
     hooks:
