@@ -14,9 +14,7 @@ import functools
 def deprecated(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        logging.warning(
-            f"The function {func.__name__} is deprecated and will be removed in the next major release."
-        )
+        logging.warning(f"The function {func.__name__} is deprecated and will be removed in the next major release.")
         return func(*args, **kwargs)
 
     return wrapper
@@ -26,10 +24,7 @@ def deprecated(func):
 def beta(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        logging.warning(
-            f"The function {func.__name__} is in BETA so might not work 100% of the "
-            f"times."
-        )
+        logging.warning(f"The function {func.__name__} is in BETA so might not work 100% of the " f"times.")
         return func(*args, **kwargs)
 
     return wrapper

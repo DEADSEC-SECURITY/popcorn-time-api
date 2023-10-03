@@ -41,9 +41,7 @@ class PopcornTime:
 
         req = requests.get(url, **kwargs)
         if req.status_code != 200:
-            self.log.error(
-                f"Request to {url} failed with status code {req.status_code}"
-            )
+            self.log.error(f"Request to {url} failed with status code {req.status_code}")
             return None
         return req.json()
 
@@ -224,9 +222,7 @@ class PopcornTime:
             return stats
         return None
 
-    def get_movies_page(
-        self, page: Union[int, str]
-    ) -> Optional[requests.Response.json]:
+    def get_movies_page(self, page: Union[int, str]) -> Optional[requests.Response.json]:
         """
         Gets the movies page
 
@@ -307,9 +303,7 @@ class PopcornTime:
                     return None
             return None
 
-        self.log.info(
-            f"Got {len(filtered_torrents)} torrents with quality >= {min_quality}"
-        )
+        self.log.info(f"Got {len(filtered_torrents)} torrents with quality >= {min_quality}")
 
         # Get the torrents with the most seeds
         filtered_torrents.sort(key=self._get_torrent_seeds, reverse=True)
@@ -366,9 +360,7 @@ class TestPopcorn(unittest.TestCase):
             pass
 
         if not req:
-            logging.error(
-                "Testing internet connection failed, please check your connection and try again!"
-            )
+            logging.error("Testing internet connection failed, please check your connection and try again!")
             sys.exit()
 
         logging.info("Internet connection test was successful")
