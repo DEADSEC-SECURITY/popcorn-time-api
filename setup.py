@@ -23,6 +23,6 @@ setup(
         "popcorn-time-api",
     ],
     license="MIT",
-    install_requires=["requests==2.32.3"],
+    install_requires=["requests==2.32.5"],
     python_requires=">=3.7",
 )
