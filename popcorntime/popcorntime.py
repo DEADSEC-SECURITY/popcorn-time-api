@@ -6,15 +6,13 @@
 #  LinkedIn: https://www.linkedin.com/in/antonio-manuel-goncalves-983926142/
 #  Github: https://github.com/DEADSEC-SECURITY
 
-from typing import Optional, Union
-
-import requests
 import logging
 import sys
 import unittest
-
-
 from urllib.parse import urljoin
+
+import requests
+
 from .wrappers import beta
 
 
@@ -30,7 +28,7 @@ class PopcornTime:
 
         self._LANGUAGE = language
 
-    def _get(self, url: str, **kwargs) -> Optional[requests.Response.json]:
+    def _get(self, url: str, **kwargs) -> requests.Response.json | None:
         """
         Performs a GET request to the url provided and returns the response
 
@@ -130,7 +128,7 @@ class PopcornTime:
 
         return torrents[torrents_language[0]]
 
-    def get_server_status(self) -> Optional[requests.Response.json]:
+    def get_server_status(self) -> requests.Response.json | None:
         """
         Get the server status
 
@@ -146,7 +144,7 @@ class PopcornTime:
 
     """SHOWS START"""
 
-    def get_shows_stats(self) -> Optional[requests.Response.json]:
+    def get_shows_stats(self) -> requests.Response.json | None:
         """
         Get the shows stats
 
@@ -160,7 +158,7 @@ class PopcornTime:
             return stats
         return None
 
-    def get_shows_page(self, page: (int, str)) -> Optional[requests.Response.json]:
+    def get_shows_page(self, page: (int, str)) -> requests.Response.json | None:
         """
         Gets the shows page
 
@@ -175,7 +173,7 @@ class PopcornTime:
             return shows
         return None
 
-    def get_show(self, show_id: (int, str)) -> Optional[requests.Response.json]:
+    def get_show(self, show_id: (int, str)) -> requests.Response.json | None:
         """
         Get the show
 
@@ -190,7 +188,7 @@ class PopcornTime:
             return show
         return None
 
-    def get_random_show(self) -> Optional[requests.Response.json]:
+    def get_random_show(self) -> requests.Response.json | None:
         """
         Get a random show
 
@@ -208,7 +206,7 @@ class PopcornTime:
 
     """MOVIES START"""
 
-    def get_movies_stats(self) -> Optional[requests.Response.json]:
+    def get_movies_stats(self) -> requests.Response.json | None:
         """
         Get the movies stats
 
@@ -222,7 +220,7 @@ class PopcornTime:
             return stats
         return None
 
-    def get_movies_page(self, page: Union[int, str]) -> Optional[requests.Response.json]:
+    def get_movies_page(self, page: int | str) -> requests.Response.json | None:
         """
         Gets the movies page
 
@@ -237,7 +235,7 @@ class PopcornTime:
             return movies
         return None
 
-    def get_movie(self, movie_id: Union[int, str]) -> Optional[requests.Response.json]:
+    def get_movie(self, movie_id: int | str) -> requests.Response.json | None:
         """
         Get the movie
 
@@ -252,7 +250,7 @@ class PopcornTime:
             return movie
         return None
 
-    def get_random_movie(self) -> Optional[requests.Response.json]:
+    def get_random_movie(self) -> requests.Response.json | None:
         """
         Gets a random movie from the api
 
@@ -269,9 +267,7 @@ class PopcornTime:
 
     """AUXILIARY METHODS START"""
 
-    def get_best_torrent(
-        self, torrents: dict, min_quality: int = 1080, revert_to_default: bool = False
-    ) -> Optional[dict]:
+    def get_best_torrent(self, torrents: dict, min_quality: int = 1080, revert_to_default: bool = False) -> dict | None:
         """
         Get the best torrent
 
@@ -313,7 +309,7 @@ class PopcornTime:
         return filtered_torrents[0]
 
     @beta
-    def remove_cam_torrents(self, torrents: dict) -> Optional[dict]:
+    def remove_cam_torrents(self, torrents: dict) -> dict | None:
         """
         Remove torrents that where filmed by a camera
         These are normally those films that where filmed inside the cinema which
