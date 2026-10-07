@@ -1,5 +1,6 @@
-from setuptools import find_packages, setup
 import pathlib
+
+from setuptools import find_packages, setup
 
 README = (pathlib.Path(__file__).parent / "README.md").read_text(encoding="utf8")
 
