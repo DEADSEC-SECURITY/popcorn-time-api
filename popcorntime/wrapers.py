@@ -6,8 +6,8 @@
 #  LinkedIn: https://www.linkedin.com/in/antonio-manuel-goncalves-983926142/
 #  Github: https://github.com/DEADSEC-SECURITY
 
-import logging
 import functools
+import logging
 
 
 # Wrapper for deprecated function
